@@ -38,12 +38,12 @@ function generatePokemon(pokemonNamesAssetMap, pokemonTypeNamesAssetMap, pokemon
 }
 
 async function downloadFile(fn: () => Promise<PokemonIconResponse>, destination: string) {
-  // try {
-  //   const response = await fn();
-  //   await pipelineAsync(response.body, createWriteStream(destination, {autoClose: true, emitClose: true}));
-  // } catch (err) {
-  //   // console.error(err.message);
-  // }
+  try {
+    const response = await fn();
+    await pipelineAsync(response.body, createWriteStream(destination, {autoClose: true, emitClose: true}));
+  } catch (err) {
+    // console.error(err.message);
+  }
 }
 
 // async function generateDefenderType(pokemonTypeNamesAssetMap, type: PokemonMasterTypeDefend) {
