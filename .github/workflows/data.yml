@@ -11,6 +11,8 @@ jobs:
       - name: Install
         run: yarn install
       - name: Generate
+        env:
+          DB_URL: ${{ secrets.DB_URL }}
         run: yarn workspace data generate
       - name: Upload
         uses: cpina/github-action-push-to-another-repository@master

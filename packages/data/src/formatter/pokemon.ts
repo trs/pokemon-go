@@ -38,7 +38,7 @@ export interface PokemonStatsMaster {
 
 const isValidType = (type: any): type is string => typeof type === 'string';
 
-export function * formatPokemon(gm: GameMaster): Generator<PokemonMaster> {
+export function * formatPokemon(gm: GameMaster): Iterable<PokemonMaster> {
   for (const formTemplate of gm) {
     if (!isFormsTemplate(formTemplate)) continue;
     const [numStr] = extractFormsTemplateValues(formTemplate);
