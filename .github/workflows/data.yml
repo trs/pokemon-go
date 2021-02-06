@@ -1,0 +1,24 @@
+name: Generate Data
+on: push
+
+jobs:
+  data:
+    name: Generate and Upload
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install
+        run: yarn install
+      - name: Generate
+        run: yarn workspace data generate
+      - name: Upload
+        uses: cpina/github-action-push-to-another-repository@master
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+        with:
+          source-directory: 'packages/data/gen'
+          destination-github-username: 'trs'
+          destination-repository-name: 'pokemon-go-data'
+          target-branch: main
+          user-email: github@tylerstewart.ca
