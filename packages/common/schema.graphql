@@ -1,0 +1,204 @@
+type DeleteManyPayload {
+  deletedCount: Int!
+}
+
+type InsertManyPayload {
+  insertedIds: [ObjectId]!
+}
+
+type Mutation {
+  deleteManyPokemons(query: PokemonQueryInput): DeleteManyPayload
+  deleteOnePokemon(query: PokemonQueryInput!): Pokemon
+  insertManyPokemons(data: [PokemonInsertInput!]!): InsertManyPayload
+  insertOnePokemon(data: PokemonInsertInput!): Pokemon
+  replaceOnePokemon(query: PokemonQueryInput, data: PokemonInsertInput!): Pokemon
+  updateManyPokemons(query: PokemonQueryInput, set: PokemonUpdateInput!): UpdateManyPayload
+  updateOnePokemon(query: PokemonQueryInput, set: PokemonUpdateInput!): Pokemon
+  upsertOnePokemon(data: PokemonInsertInput!, query: PokemonQueryInput): Pokemon
+}
+
+scalar ObjectId
+
+type Pokemon {
+  _id: ObjectId
+  forms: [PokemonForm]
+  name: String
+  number: Int
+  types: [PokemonType]
+  uid: String
+}
+
+type PokemonForm {
+  code: String
+  name: String
+}
+
+input PokemonFormInsertInput {
+  name: String
+  code: String
+}
+
+input PokemonFormQueryInput {
+  code_gte: String
+  AND: [PokemonFormQueryInput!]
+  code_exists: Boolean
+  name: String
+  code_nin: [String]
+  name_lt: String
+  code: String
+  code_lt: String
+  name_gt: String
+  name_exists: Boolean
+  name_in: [String]
+  name_lte: String
+  name_gte: String
+  code_lte: String
+  code_ne: String
+  name_ne: String
+  name_nin: [String]
+  OR: [PokemonFormQueryInput!]
+  code_gt: String
+  code_in: [String]
+}
+
+input PokemonFormUpdateInput {
+  code: String
+  code_unset: Boolean
+  name: String
+  name_unset: Boolean
+}
+
+input PokemonInsertInput {
+  forms: [PokemonFormInsertInput]
+  name: String
+  number: Int
+  types: [PokemonTypeInsertInput]
+  uid: String
+  _id: ObjectId
+}
+
+input PokemonQueryInput {
+  number_gte: Int
+  uid_exists: Boolean
+  forms_exists: Boolean
+  forms_nin: [PokemonFormQueryInput]
+  forms: [PokemonFormQueryInput]
+  number_exists: Boolean
+  OR: [PokemonQueryInput!]
+  _id_gt: ObjectId
+  uid_lt: String
+  types_exists: Boolean
+  _id_nin: [ObjectId]
+  uid_in: [String]
+  number_lt: Int
+  types_in: [PokemonTypeQueryInput]
+  number: Int
+  forms_in: [PokemonFormQueryInput]
+  name_in: [String]
+  _id_in: [ObjectId]
+  uid_gte: String
+  number_lte: Int
+  _id_lt: ObjectId
+  _id_ne: ObjectId
+  _id: ObjectId
+  uid_nin: [String]
+  _id_lte: ObjectId
+  _id_gte: ObjectId
+  types: [PokemonTypeQueryInput]
+  name_exists: Boolean
+  uid_ne: String
+  AND: [PokemonQueryInput!]
+  name: String
+  name_gte: String
+  name_gt: String
+  number_in: [Int]
+  uid_lte: String
+  _id_exists: Boolean
+  uid: String
+  number_nin: [Int]
+  name_lt: String
+  types_nin: [PokemonTypeQueryInput]
+  uid_gt: String
+  name_lte: String
+  number_ne: Int
+  name_nin: [String]
+  name_ne: String
+  number_gt: Int
+}
+
+enum PokemonSortByInput {
+  UID_ASC
+  UID_DESC
+  _ID_ASC
+  _ID_DESC
+  NAME_ASC
+  NAME_DESC
+  NUMBER_ASC
+  NUMBER_DESC
+}
+
+type PokemonType {
+  code: String
+  name: String
+}
+
+input PokemonTypeInsertInput {
+  code: String
+  name: String
+}
+
+input PokemonTypeQueryInput {
+  code: String
+  name_nin: [String]
+  name_ne: String
+  code_nin: [String]
+  code_lte: String
+  code_exists: Boolean
+  code_gte: String
+  name_exists: Boolean
+  name_lte: String
+  name_in: [String]
+  name: String
+  name_lt: String
+  code_gt: String
+  name_gte: String
+  code_lt: String
+  OR: [PokemonTypeQueryInput!]
+  code_in: [String]
+  code_ne: String
+  AND: [PokemonTypeQueryInput!]
+  name_gt: String
+}
+
+input PokemonTypeUpdateInput {
+  code_unset: Boolean
+  name: String
+  name_unset: Boolean
+  code: String
+}
+
+input PokemonUpdateInput {
+  types: [PokemonTypeUpdateInput]
+  _id_unset: Boolean
+  name: String
+  uid_unset: Boolean
+  _id: ObjectId
+  number_inc: Int
+  number: Int
+  number_unset: Boolean
+  uid: String
+  types_unset: Boolean
+  forms: [PokemonFormUpdateInput]
+  forms_unset: Boolean
+  name_unset: Boolean
+}
+
+type Query {
+  pokemon(query: PokemonQueryInput): Pokemon
+  pokemons(limit: Int = 100, sortBy: PokemonSortByInput, query: PokemonQueryInput): [Pokemon]!
+}
+
+type UpdateManyPayload {
+  matchedCount: Int!
+  modifiedCount: Int!
+}
