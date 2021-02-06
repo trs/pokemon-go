@@ -1,0 +1,7 @@
+{
+  "name": "pokemon-go-type-advantage-app",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ]
+}
