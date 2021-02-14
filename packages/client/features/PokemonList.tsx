@@ -14,7 +14,7 @@ export const PokemonListComponent = () => {
   return (
     <>
       {data.pokemons.map((pokemon) => {
-        return <p>{pokemon.name} ({pokemon.number})</p>
+        return <p key={pokemon.uid}>{pokemon.name} ({pokemon.number})</p>
       })}
     </>
   )
