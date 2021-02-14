@@ -1,3 +1,3 @@
 module.exports = {
-  plugins: ['@snowpack/plugin-react-refresh']
+  plugins: ['@snowpack/plugin-react-refresh', "@snowpack/plugin-dotenv"]
 }
