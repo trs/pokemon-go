@@ -1,25 +1,25 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-import {paramCase} from 'change-case';
-import {writeFile, mkdir} from 'fs/promises';
-import {createWriteStream} from 'fs';
-import {pipeline} from 'stream';
-import {promisify} from 'util';
+import { paramCase } from 'change-case';
+import { writeFile, mkdir } from 'fs/promises';
+import { createWriteStream } from 'fs';
+import { pipeline } from 'stream';
+import { promisify } from 'util';
 
 const pipelineAsync = promisify(pipeline);
 
-import {getGameMaster} from './source/master';
-import {getAssetTexts} from './source/asset/text';
+import { getGameMaster } from './source/master';
+import { getAssetTexts } from './source/asset/text';
 import { getAssetPokemonIcon } from './source/asset/image';
-import {getAssetPokemonNames, getAssetPokemonTypeNames} from './source/asset/text/types';
-import {formatPokemon} from './formatter/pokemon';
+import { getAssetPokemonNames, getAssetPokemonTypeNames } from './source/asset/text/types';
+import { formatPokemon } from './formatter/pokemon';
 
-import {connectDatabase, closeDatabase} from './db';
+import { connectDatabase, closeDatabase } from './db';
 import { DB_COLLECTION } from './const';
 
-import type {PokemonMaster} from './formatter/pokemon';
-import type {PokemonIconResponse} from './source/asset/image';
+import type { PokemonMaster } from './formatter/pokemon';
+import type { PokemonIconResponse } from './source/asset/image';
 
 function generatePokemon(pokemonNamesAssetMap, pokemonTypeNamesAssetMap, pokemon: PokemonMaster) {
   const nameAsset = pokemonNamesAssetMap.get(pokemon.number);
@@ -29,7 +29,7 @@ function generatePokemon(pokemonNamesAssetMap, pokemonTypeNamesAssetMap, pokemon
 
   const uid = paramCase([
     pokemon.number,
-    ...pokemon.forms.map(({code}) => code).filter((form) => form !== 'normal')
+    ...pokemon.forms.map(({ code }) => code).filter((form) => form !== 'normal')
   ].join('-'));
 
   const types = pokemon.types.map((templateId) => {
@@ -52,7 +52,7 @@ function generatePokemon(pokemonNamesAssetMap, pokemonTypeNamesAssetMap, pokemon
 async function downloadFile(fn: () => Promise<PokemonIconResponse>, destination: string) {
   try {
     const response = await fn();
-    await pipelineAsync(response.body, createWriteStream(destination, {autoClose: true, emitClose: true}));
+    await pipelineAsync(response.body, createWriteStream(destination, { autoClose: true, emitClose: true }));
   } catch (err) {
     // console.error(err.message);
   }
@@ -86,17 +86,17 @@ async function downloadFile(fn: () => Promise<PokemonIconResponse>, destination:
 
 void async function generate() {
   try {
-    const POKEMON_OUT_DIR = `${__dirname}/../gen/pkmn`;
-    const IMAGE_OUT_DIR = `${__dirname}/../gen/img`;
-    const IMAGE_SHINY_OUT_DIR = `${__dirname}/../gen/img/shiny`;
+    const POKEMON_OUT_DIR = `${__dirname}/../build/pkmn`;
+    const IMAGE_OUT_DIR = `${__dirname}/../build/img/regular`;
+    const IMAGE_SHINY_OUT_DIR = `${__dirname}/../build/img/shiny`;
 
     const [gm, textAssets, db] = await Promise.all([
       getGameMaster(),
       getAssetTexts(),
       connectDatabase(),
-      mkdir(POKEMON_OUT_DIR, {recursive: true}).catch(() => void 0),
-      mkdir(IMAGE_OUT_DIR, {recursive: true}).catch(() => void 0),
-      mkdir(IMAGE_SHINY_OUT_DIR, {recursive: true}).catch(() => void 0)
+      mkdir(POKEMON_OUT_DIR, { recursive: true }).catch(() => void 0),
+      mkdir(IMAGE_OUT_DIR, { recursive: true }).catch(() => void 0),
+      mkdir(IMAGE_SHINY_OUT_DIR, { recursive: true }).catch(() => void 0)
     ]);
 
     const [pokemonNamesAssetMap, pokemonTypeNamesAssetMap] = await Promise.all([
@@ -111,10 +111,11 @@ void async function generate() {
       promises.push((async () => {
         const formattedPokemon = generatePokemon(pokemonNamesAssetMap, pokemonTypeNamesAssetMap, rawPokemon);
         await Promise.all([
-          pokemonCollection.findOneAndReplace({uid: formattedPokemon.uid}, formattedPokemon, {upsert: true}),
+          pokemonCollection.findOneAndReplace({ uid: formattedPokemon.uid }, formattedPokemon, { upsert: true }),
           writeFile(`${POKEMON_OUT_DIR}/${formattedPokemon.uid}.json`, JSON.stringify(formattedPokemon, null, 2)),
-          downloadFile(() => getAssetPokemonIcon(rawPokemon.assetId, {shiny: false}), `${IMAGE_OUT_DIR}/${formattedPokemon.uid}.png`),
-          downloadFile(() => getAssetPokemonIcon(rawPokemon.assetId, {shiny: true}), `${IMAGE_SHINY_OUT_DIR}/${formattedPokemon.uid}.png`),
+
+          downloadFile(() => getAssetPokemonIcon(rawPokemon.assetId, { shiny: false }), `${IMAGE_OUT_DIR}/${formattedPokemon.uid}.png`),
+          downloadFile(() => getAssetPokemonIcon(rawPokemon.assetId, { shiny: true }), `${IMAGE_SHINY_OUT_DIR}/${formattedPokemon.uid}.png`),
         ]);
       })());
     }

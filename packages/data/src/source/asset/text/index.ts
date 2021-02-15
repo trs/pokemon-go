@@ -8,7 +8,7 @@ export type AssetTextMap = Map<string, string>;
 export type AssetLanguage = 'english';
 
 export async function getAssetTexts(language: AssetLanguage = 'english'): Promise<AssetTextMap> {
-  const url = new URL(`master/Texts/Latest APK/JSON/i18n_${language}.json`, ASSETS_URL);
+  const url = new URL(`Texts/Latest APK/JSON/i18n_${language}.json`, ASSETS_URL);
   const resp = await fetch(url.href);
   const json = await resp.json() as {data: string[]};
 

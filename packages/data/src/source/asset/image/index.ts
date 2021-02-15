@@ -13,7 +13,7 @@ export interface PokemonIconResponse {
 }
 
 export async function getAssetPokemonIcon(assetId: string, options: AssetPokemonIconOptions): Promise<PokemonIconResponse> {
-  const url = new URL(`master/Images/Pokemon/pokemon_icon_${assetId}${options.shiny ? '_shiny' : ''}.png`, ASSETS_URL);
+  const url = new URL(`Images/Pokemon/pokemon_icon_${assetId}${options.shiny ? '_shiny' : ''}.png`, ASSETS_URL);
   try {
     const response = await fetch(url.href);
     if (!response.ok) {

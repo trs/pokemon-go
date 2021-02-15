@@ -19,7 +19,7 @@ jobs:
         env:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
         with:
-          source-directory: 'packages/data/gen'
+          source-directory: 'packages/data/build'
           destination-github-username: 'trs'
           destination-repository-name: 'pokemon-go-data'
           target-branch: main
