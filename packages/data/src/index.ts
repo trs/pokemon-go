@@ -44,6 +44,7 @@ function generatePokemon(pokemonNamesAssetMap, pokemonTypeNamesAssetMap, pokemon
     uid,
     name,
     number: pokemon.number,
+    generation: pokemon.generation,
     forms: pokemon.forms,
     types
   };

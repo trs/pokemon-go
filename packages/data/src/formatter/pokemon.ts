@@ -15,11 +15,23 @@ const SPLIT_FORMS = [
   /^galarian \w+$/i,
 ];
 
+const GEN_RANGES = [
+  [1, 151],
+  [152, 251],
+  [252, 386],
+  [386, 493],
+  [494, 649],
+  [650, 721],
+  [722, 809],
+  [810, 898]
+];
+
 export interface PokemonMaster {
   templateId: string;
   uniqueId: string;
   types: string[];
   number: number;
+  generation: number;
   stats: PokemonStatsMaster;
   quickMoves: string[];
   chargeMoves: string[];
@@ -43,6 +55,8 @@ export function * formatPokemon(gm: GameMaster): Iterable<PokemonMaster> {
     if (!isFormsTemplate(formTemplate)) continue;
     const [numStr] = extractFormsTemplateValues(formTemplate);
     const number = Number(numStr);
+
+    const generation = GEN_RANGES.findIndex(([min, max]) => number >= min && number <= max) + 1;
 
     // Gather valid forms
     const forms: GameMasterTemplateForm[] = (formTemplate.data.formSettings.forms ?? []).filter((form) =>
@@ -81,6 +95,7 @@ export function * formatPokemon(gm: GameMaster): Iterable<PokemonMaster> {
         uniqueId,
         types: [pokemonTemplate.data.pokemon.type1, pokemonTemplate.data.pokemon.type2].filter(isValidType),
         number,
+        generation,
         stats: {
           stamina: pokemonTemplate.data.pokemon.stats.baseStamina,
           attack: pokemonTemplate.data.pokemon.stats.baseAttack,
